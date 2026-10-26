@@ -1,30 +1,14 @@
+
 trigger:
 - main
 
 pool:
-  vmImage: 'ubuntu-latest'
-
-variables:
-  mavenPOMFile: 'pom.xml'
+  vmImage: ubuntu-latest
 
 steps:
 - task: Maven@4
   inputs:
-    mavenPomFile: '$(mavenPOMFile)'
-    mavenOptions: '-Xmx3072m'
-    javaVersionOption: '1.11'
-    jdkVersionOption: '1.11'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
-
-- task: CopyFiles@2
-  inputs:
-    Contents: '**/target/*.jar'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
+    mavenPomFile: 'pom.xml'
+    goals: 'clean package'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.17'
