@@ -1,14 +1,23 @@
-
 trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
 steps:
-- task: Maven@4
+- task: UseNode@1
   inputs:
-    mavenPomFile: 'pom.xml'
-    goals: 'clean package'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.17'
+    version: '18.x'
+
+- script: |
+    npm install
+    npm test -- --reporters=default --reporters=jest-junit
+  displayName: 'Run tests'
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/junit.xml'
+    mergeTestResults: true
+  displayName: 'Publish test results'
+  condition: succeededOrFailed()
