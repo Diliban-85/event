@@ -1,23 +1,14 @@
-trigger:
-- main
+trigger: none
 
 pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: UseNode@1
+- task: Maven@4
   inputs:
-    version: '18.x'
-
-- script: |
-    npm install
-    npm test -- --reporters=default --reporters=jest-junit
-  displayName: 'Run tests'
-
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/junit.xml'
-    mergeTestResults: true
-  displayName: 'Publish test results'
-  condition: succeededOrFailed()
+    mavenPomFile: 'pom.xml'
+    goals: 'clean test'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.17'
